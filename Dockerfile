@@ -1,14 +1,20 @@
+# syntax=docker/dockerfile:1-labs
 # This is the Dockerfile for jaideraf/idzebra-arm64
 
-FROM --platform=linux/arm64 ubuntu:jammy
+ARG UBUNTU_VERSION=20.04
+
+FROM --platform=linux/arm64 ubuntu:${UBUNTU_VERSION}
 
 # set timezone
-ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=America/Sao_Paulo
 RUN set -eux; \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # update packages and install dependencies
+
+# https://serverfault.com/a/797318
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
     autoconf \
     automake \
@@ -17,7 +23,6 @@ RUN apt-get update && apt-get install -y \
     docbook-xml \
     docbook-xsl \
     gcc \
-    git \
     inkscape \
     libexpat1-dev \
     libicu-dev \
@@ -35,16 +40,16 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /opt
 
 # build Yaz
-RUN git clone https://github.com/indexdata/yaz.git; \
-    cd yaz && git checkout v5.34.0; \
+ADD https://github.com/indexdata/yaz.git#v5.34.0 yaz/
+RUN cd yaz ; \
     ./buildconf.sh; \
     ./configure --with-iconv --with-icu; \
     make; \
     make install
 
 # build Zebra
-RUN git clone https://github.com/indexdata/idzebra.git; \
-    cd idzebra && git checkout v2.2.7; \
+ADD https://github.com/indexdata/idzebra.git#v2.2.7 idzebra/
+RUN cd idzebra ; \
     ./buildconf.sh; \
     ./configure --enable-mod-dom; \
     make; \
@@ -52,7 +57,14 @@ RUN git clone https://github.com/indexdata/idzebra.git; \
 
 # remove things after compilation
 RUN apt purge -y \
+    autoconf \
+    automake \
     docbook \
     docbook-xml \
     docbook-xsl \
-    inkscape
+    gcc \
+    inkscape \
+    libtool \
+    libwrap0-dev \
+    make \
+    pkg-config
