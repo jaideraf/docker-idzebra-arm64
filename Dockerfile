@@ -1,9 +1,9 @@
-# syntax=docker/dockerfile:1-labs
 # This is the Dockerfile for jaideraf/idzebra-arm64
+# Use --platform=linux/amd64 in the docker build command
 
 ARG UBUNTU_VERSION=20.04
 
-FROM --platform=linux/arm64 ubuntu:${UBUNTU_VERSION}
+FROM ubuntu:${UBUNTU_VERSION}
 
 # set timezone
 ENV TZ=America/Sao_Paulo
@@ -35,12 +35,12 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     tcl \
     xsltproc \
-&& rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
 
 # build Yaz
-ADD https://github.com/indexdata/yaz.git#v5.34.0 yaz/
+ADD https://github.com/indexdata/yaz.git#v5.34.2 yaz/
 RUN cd yaz ; \
     ./buildconf.sh; \
     ./configure --with-iconv --with-icu; \
@@ -68,3 +68,5 @@ RUN apt purge -y \
     libwrap0-dev \
     make \
     pkg-config
+
+CMD ["/bin/sh", "-c", "bash"]
