@@ -10,6 +10,6 @@ Example: `docker build -t jaideraf/idzebra-arm64 --platform=linux/amd64 .`
 
 To see the versions installed, use:
 
-- `docker run --rm jaideraf/idzebra-arm64 idzebra-config-2.0 --version`
+- `docker run --rm jaideraf/idzebra-arm64:20.04 idzebra-config-2.0 --version`
 
-- `docker run --rm jaideraf/idzebra-arm64 yaz-config --version`
+- `docker run --rm jaideraf/idzebra-arm64:20.04 yaz-config --version`
