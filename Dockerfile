@@ -1,7 +1,7 @@
 # This is the Dockerfile for jaideraf/idzebra-arm64
 # Use --platform=linux/amd64 in the docker build command
 
-ARG UBUNTU_VERSION=20.04
+ARG UBUNTU_VERSION=24.04
 
 FROM ubuntu:${UBUNTU_VERSION}
 
@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /opt
 
 # build Yaz
-ADD https://github.com/indexdata/yaz.git#v5.34.2 yaz/
+ADD https://github.com/indexdata/yaz.git#v5.35.1 yaz/
 RUN cd yaz ; \
     ./buildconf.sh; \
     ./configure --with-iconv --with-icu; \
@@ -48,7 +48,7 @@ RUN cd yaz ; \
     make install
 
 # build Zebra
-ADD https://github.com/indexdata/idzebra.git#v2.2.7 idzebra/
+ADD https://github.com/indexdata/idzebra.git#v2.2.8 idzebra/
 RUN cd idzebra ; \
     ./buildconf.sh; \
     ./configure --enable-mod-dom; \
